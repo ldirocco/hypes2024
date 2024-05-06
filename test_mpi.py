@@ -41,6 +41,7 @@ if rank == 0:
         jobs = []
         for target, _ in schedule[i-1]:
             target_sequence = fastq_df[target]
+            # TODO: reduce dimension of fastq_df
             jobs.append((target, target_sequence, overlapping_dfs[target],len_window, fastq_df))
         # Send jobs to other processes
         comm.send(jobs, dest=i)
