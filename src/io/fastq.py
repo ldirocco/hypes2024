@@ -11,7 +11,7 @@ def read_fastq(file_path):
     Returns:
     - pandas DataFrame: DataFrame containing sequence id, sequence, and quality scores.
     """
-    sequences = []
+    sequences = {}
     with open(file_path, "r") as file:
         lines = file.readlines()
         i = 0
@@ -19,11 +19,11 @@ def read_fastq(file_path):
             if lines[i][0] == "@":
                 seq_id = lines[i].strip()[1:]
                 sequence = lines[i+1].strip()
-                quality = lines[i+3].strip()
-                sequences.append((seq_id, sequence, quality))
+                #quality = lines[i+3].strip()
+                sequences[seq_id] = sequence #, quality))
                 i += 4
             else:
                 i += 1
-    columns = ['seq_id', 'sequence', 'quality']
-    sequences = pd.DataFrame(sequences, columns=columns)
+    #columns = ['seq_id', 'sequence', 'quality']
+    #sequences = pd.DataFrame(sequences, columns=columns)
     return sequences
