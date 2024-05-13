@@ -13,6 +13,9 @@ class WorkQueue:
         self.resources_work_queue = {}
         self.slave_resources      = {}
 
+    def __len__(self):
+        return len(self.work_queue)
+
     def done(self):
         """
         Return True when there is no more work to do, the slaves are idle and
@@ -27,6 +30,13 @@ class WorkQueue:
         """
         self.__add_data(data, resource_id)
 
+    def insert_work(self, data, resource_id=None):
+        """
+        Add more data to the work queue. When a slave become available this data
+        will be passed to it
+        """
+        self.__insert_data(data, resource_id)
+        
     def do_work(self):
         """
         Assign data stored in the work queue to each idle slaves (if any)
@@ -73,6 +83,16 @@ class WorkQueue:
             # add a task in the work queue with specifc resource_id
             work_queue = self.resources_work_queue.get(resource_id, list())
             work_queue.append(data)
+            self.resources_work_queue[resource_id] = work_queue
+
+    def __insert_data(self, data, resource_id):
+        if resource_id is None:
+            # Anonymous work queue
+            self.work_queue.insert(0, data)
+        else:
+            # add a task in the work queue with specifc resource_id
+            work_queue = self.resources_work_queue.get(resource_id, list())
+            work_queue.insert(0, data)
             self.resources_work_queue[resource_id] = work_queue
 
     def __pop_data(self, resource_id):

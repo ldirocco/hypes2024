@@ -11,11 +11,11 @@ def process_target(target, target_sequence, overlapping_df, len_window, fastq_df
     
     for index, row in overlapping_df.iterrows():
         windows_borders=[]
-        r=row['q_start']
+        r=int(row['q_start'])
         windows_borders=[(0,r//len_window)]
         query_sequence=fastq_df[row['t_seq_name']]
-        q_start=row['t_start']
-        q_end=row['t_end']
+        q_start=int(row['t_start'])
+        q_end=int(row['t_end'])
         query_sequence=query_sequence[q_start:q_end]
         edit_distance = edlib.align(query=query_sequence, target=target_sequence, mode="NW", task="path")
         niceNW = edlib.getNiceAlignment(edit_distance, query=query_sequence, target=target_sequence)

@@ -25,7 +25,13 @@ class MultiWorkQueue:
                 num_slaves = self.num_slaves[task_id]
                 master     = work_queue.master
                 if num_slaves is None or master.num_slaves() < num_slaves:
-                    master.add_slave(slaves.pop(0), ready=True)                    
+                    master.add_slave(slaves.pop(0), ready=True)  
+
+    def __len__(self):
+        l = 0
+        for k, v in self.work_queue.items():
+            l += len(v)
+        return l
                     
 
     def done(self):
@@ -36,6 +42,9 @@ class MultiWorkQueue:
 
     def add_work(self, task_id, data, resource_id=None):
         self.work_queue[task_id].add_work(data, resource_id=resource_id)
+
+    def insert_work(self, task_id, data, resource_id=None):
+        self.work_queue[task_id].insert_work(data, resource_id=resource_id)
 
     def do_work(self):
 

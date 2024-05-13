@@ -4,3 +4,4 @@ from .maf import read_maf
 
 from .folder import read_from_folder
 from .paf import read_paf
+from .paf import read_dist_paf
