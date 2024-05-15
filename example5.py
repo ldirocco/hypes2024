@@ -182,12 +182,12 @@ class MySlave(Slave):
 
             data, i = data
 
-            print(f"CREO FINESTRE {rank}")
+            # print(f"CREO FINESTRE {rank}")
             windows = process_target(*data)
-            print(windows)
-            print(f"CREO GRAFO {rank}")
-            for k, v in windows.items():
-                _ = process_window(k, v)
+            # print(windows)
+            # print(f"CREO GRAFO {rank}")
+            #for k, v in windows.items():
+            process_window(windows)
             
             print('  Slave %s rank %d executing %s with task_id %d' % (name, rank, task, i) )
             ret = (True, i)
