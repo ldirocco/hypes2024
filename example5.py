@@ -90,6 +90,7 @@ class MyApp(object):
         This is the core of my application, keep starting slaves
         as long as there is work to do
         """
+        timestart = time.time()
         #
         # let's prepare our work queue. This can be built at initialization time
         # but it can also be added later as more work become available
@@ -148,6 +149,9 @@ class MyApp(object):
 
             # sleep some time
             time.sleep(0.3)
+        timeend = time.time()
+        print(timeend - timestart)
+            
 
 
 class MySlave(Slave):
