@@ -6,7 +6,7 @@ import time
 from src.io import read_fasta, read_fastq, read_maf, read_from_folder, read_paf
 from src.utils.lpt import lpt_scheduling
 from src.processes import process_target
-from src.processes import process_window
+from src.processes import process_windows
 from src.utils.split import split_dict_into_chunks
 
 class MyApp(object):
@@ -85,13 +85,13 @@ class MySlave(Slave):
         name = MPI.Get_processor_name()
         task, task_arg = data
         #print("DATA:", task[0])
-        print(f"CREO FINESTRE {rank}")
+        #print(f"CREO FINESTRE {rank}")
         windows = process_target(*task)
-        print(windows)
-        print(f"CREO GRAFO {rank}")
-        for k, v in windows.items():
-            _ = process_window(k, v)
-        #print('  Slave %s rank %d executing "%s" task_id "%d"' % (name, rank, task, task_arg) )
+        #print(windows)
+        #print(f"CREO GRAFO {rank}")
+        consensus_sequence = process_windows(windows)
+        
+        
         return (True, 'I completed my task (%d)' % task_arg)
 
 
