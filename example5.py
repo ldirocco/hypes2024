@@ -8,7 +8,7 @@ import time
 from src.io import read_fasta, read_fastq, read_maf, read_from_folder, read_paf, read_dist_paf
 from src.utils.lpt import lpt_scheduling
 from src.processes import process_target
-from src.processes import process_window
+from src.processes import process_windows
 from src.utils.split import split_dict_into_chunks
 
 Tasks = IntEnum('Tasks', 'TASK1 TASK2')
@@ -137,8 +137,8 @@ class MyApp(object):
             for data in self.work_queue.get_completed_work(Tasks.TASK2):
                 done, arg1 = data
                 if done:
-                    print('Master: slave finished his task : %d)' % arg1)
                     target, consensus_sequence = arg1 
+                    print('Master: slave finished his task : %s)' % target)
                     with open("output.fastq", "a") as myfile:
                         myfile.write(f">{target}\n{consensus_sequence}\n")
 
