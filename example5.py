@@ -130,7 +130,10 @@ class MyApp(object):
                     if paf_not_empty:
                         for i, (target, overlapping_df) in enumerate(paf_df.groupby("q_seq_name")):
                             target_sequence = fastq_df[target]
-                            args = ((target, target_sequence, overlapping_df, len_window, fastq_df), i)
+                            
+                            subfastq_df = {key: fastq_df[key] for key in overlapping_df["t_seq_name"]}
+                            
+                            args = ((target, target_sequence, overlapping_df, len_window, subfastq_df), i)
                             self.work_queue.add_work(Tasks.TASK2, args)
                     print('Master: slave finished his task returning: %d)' % paf_row)
 
