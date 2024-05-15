@@ -45,10 +45,11 @@ def process_target(target, t_seq, overlapping_df, len_window, fastq_df):
     return windows
 
 
-def process_window(key, window):
+def process_window(windows):
     consensus_sequence=''
-    for i in range(0,len(windows)):
-        w_consensus=a.msa(windows[i], out_cons=True, out_msa=True)
+    #for i in range(0,len(windows)):
+    for k, window in windows.items():
+        w_consensus=a.msa(window, out_cons=True, out_msa=True)
         consensus_sequence+=w_consensus.cons_seq[0]
     
     return consensus_sequence
