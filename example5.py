@@ -134,7 +134,7 @@ class MyApp(object):
                             
                             subfastq_df = {key: fastq_df[key] for key in overlapping_df["t_seq_name"]}
                             
-                            args = ((target, target_sequence, overlapping_df, len_window, subfastq_df), i)
+                            args = ((target, target_sequence, overlapping_df, len_window, subfastq_df), target)
                             self.work_queue.add_work(Tasks.TASK2, args)
                     print('Master: slave finished his task returning: %d)' % paf_row)
 
@@ -143,8 +143,8 @@ class MyApp(object):
                 if done:
                     target, consensus_sequence = arg1 
                     print('Master: slave finished his task : %s)' % target)
-                    with open("output.fastq", "a") as myfile:
-                        myfile.write(f">{target}\n{consensus_sequence}\n")
+                    #with open("output.fastq", "a") as myfile:
+                    #    myfile.write(f">{target}\n{consensus_sequence}\n")
 
 
             # sleep some time
@@ -199,7 +199,7 @@ class MySlave(Slave):
             #for k, v in windows.items():
             consensus_sequence = process_windows(windows)
             
-            print('  Slave %s rank %d executing %s with task_id %d' % (name, rank, task, i) )
+            print('  Slave %s rank %d executing %s with task_id %s' % (name, rank, task, target) )
             ret = (True, (target, consensus_sequence))
 
         return (task, ret)
