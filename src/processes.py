@@ -45,7 +45,7 @@ def process_target(target, t_seq, overlapping_df, len_window, fastq_df):
     return windows
 
 
-def process_window(windows):
+def process_windows(windows):
     consensus_sequence=''
     #for i in range(0,len(windows)):
     for k, window in windows.items():
