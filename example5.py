@@ -138,6 +138,9 @@ class MyApp(object):
                 done, arg1 = data
                 if done:
                     print('Master: slave finished his task : %d)' % arg1)
+                    target, consensus_sequence = arg1 
+                    with open("output.fastq", "a") as myfile:
+                        myfile.write(f">{target}\n{consensus_sequence}\n")
 
 
             # sleep some time
@@ -187,10 +190,10 @@ class MySlave(Slave):
             # print(windows)
             # print(f"CREO GRAFO {rank}")
             #for k, v in windows.items():
-            process_window(target, windows)
+            consensus_sequence = process_windows(windows)
             
             print('  Slave %s rank %d executing %s with task_id %d' % (name, rank, task, i) )
-            ret = (True, i)
+            ret = (True, (target, consensus_sequence))
 
         return (task, ret)
 
