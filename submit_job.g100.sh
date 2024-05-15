@@ -12,4 +12,4 @@ module load openmpi
 source venv/bin/activate
 
 # Run MPI job
-/g100_work/PROJECTS/spack/v0.17/prod/0.17.1/install/0.17/linux-centos8-cascadelake/gcc-10.2.0/openmpi-4.1.1-xcbaflrhirzvtiy3y5cnglgyfunavtx3/bin/mpirun -np 64 python test_mpi.py
+/g100_work/PROJECTS/spack/v0.17/prod/0.17.1/install/0.17/linux-centos8-cascadelake/gcc-10.2.0/openmpi-4.1.1-xcbaflrhirzvtiy3y5cnglgyfunavtx3/bin/mpirun -np 64 python example5.py
