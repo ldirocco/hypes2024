@@ -131,10 +131,12 @@ class MyApp(object):
                             
                             args = ((target, target_sequence, overlapping_df, len_window, subfastq_df), target)
                             self.work_queue.add_work(Tasks.TASK2, args)
+
+                        args = (paf_row, min_buffer_tasks)
+                        self.work_queue.insert_work(Tasks.TASK1, args)
                     print('Master: slave finished his task returning: %d)' % paf_row)
                     
-                    args = (paf_row, min_buffer_tasks)
-                    self.work_queue.insert_work(Tasks.TASK1, args)
+                    
 
             for data in self.work_queue.get_completed_work(Tasks.TASK2):
                 done, arg1 = data
