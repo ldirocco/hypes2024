@@ -52,6 +52,7 @@ class MyApp(object):
         #
         # Keeep starting slaves as long as there is work to do
         #
+        slave_times = []
         while not self.work_queue.done():
 
             #
@@ -63,12 +64,17 @@ class MyApp(object):
             # reclaim returned data from completed slaves
             #
             for slave_return_data in self.work_queue.get_completed_work():
-                done, message = slave_return_data
+                done, message, slave_time = slave_return_data
+                slave_times.append(slave_time)
                 if done:
                     print('Master: slave finished is task and says "%s"' % message)
 
             # sleep some time
             time.sleep(0.3)
+    
+        with open('slave_times.txt', 'w') as f:
+            for line in slave_times:
+                f.write(f"{line}\n")
 
 
 class MySlave(Slave):
@@ -81,6 +87,8 @@ class MySlave(Slave):
         super(MySlave, self).__init__()
 
     def do_work(self, data):
+        start_time = time.time()
+
         rank = MPI.COMM_WORLD.Get_rank()
         name = MPI.Get_processor_name()
         task, task_arg = data
@@ -90,9 +98,11 @@ class MySlave(Slave):
         #print(windows)
         #print(f"CREO GRAFO {rank}")
         consensus_sequence = process_windows(windows)
+        end_time = time.time()
+
         
         
-        return (True, 'I completed my task (%d)' % task_arg)
+        return (True, 'I completed my task (%d)' % task_arg, end_time - start_time)
 
 
 def main():
