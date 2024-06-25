@@ -109,8 +109,9 @@ class MyApp(object):
         #
         # Keeep starting slaves as long as there is work to do
         #
+        slave_times_task1 = []
+        slave_times_task2 = []
         while not self.work_queue.done():
-
             #
             # give more work to do to each idle slave (if any)
             #
@@ -121,7 +122,8 @@ class MyApp(object):
             for data in self.work_queue.get_completed_work(Tasks.TASK1):
                 done, arg1 = data
                 if done:
-                    paf_df, paf_row = arg1  
+                    paf_df, paf_row, slave_time = arg1  
+                    slave_times_task1.append(slave_time)
                     paf_not_empty = not paf_df.empty
                     if paf_not_empty:
                         for i, (target, overlapping_df) in enumerate(paf_df.groupby("q_seq_name")):
@@ -141,7 +143,8 @@ class MyApp(object):
             for data in self.work_queue.get_completed_work(Tasks.TASK2):
                 done, arg1 = data
                 if done:
-                    target, consensus_sequence = arg1 
+                    target, consensus_sequence, slave_time = arg1 
+                    slave_times_task2.append(slave_time)
                     print('Master: slave finished his task : %s)' % target)
                     #with open("output.fastq", "a") as myfile:
                     #    myfile.write(f">{target}\n{consensus_sequence}\n")
@@ -151,6 +154,13 @@ class MyApp(object):
             time.sleep(0.3)
         timeend = time.time()
         print(timeend - timestart)
+        with open('ex5_slave_times_task1.txt', 'w') as f:
+            for line in slave_times_task1:
+                f.write(f"{line}\n")
+
+        with open('ex5_slave_times_task2.txt', 'w') as f:
+            for line in slave_times_task2:
+                f.write(f"{line}\n")
             
 
 
@@ -182,14 +192,15 @@ class MySlave(Slave):
         #
         ret = None
         if task == Tasks.TASK1:
-
+            start_time = time.time()
             paf_row, tasks = data
             paf_df, paf_row = read_dist_paf("data/overlap.paf", skiprows=paf_row, group_col_idx=0, n_process=tasks)
             #print('  Slave %s rank %d executing %s with task_id %d' % (name, rank, task, arg1) )
-            ret = (True, (paf_df, paf_row))
+            end_time = time.time()
+            ret = (True, (paf_df, paf_row), end_time - start_time)
 
         elif task == Tasks.TASK2:
-
+            start_time = time.time()
             data, i = data
             target = data[0]
             # print(f"CREO FINESTRE {rank}")
@@ -198,9 +209,10 @@ class MySlave(Slave):
             # print(f"CREO GRAFO {rank}")
             #for k, v in windows.items():
             consensus_sequence = process_windows(windows)
+            end_time = time.time()
             
             print('  Slave %s rank %d executing %s with task_id %s' % (name, rank, task, target) )
-            ret = (True, (target, consensus_sequence))
+            ret = (True, (target, consensus_sequence), end_time - start_time)
 
         return (task, ret)
 
