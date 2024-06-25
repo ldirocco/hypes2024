@@ -72,7 +72,7 @@ class MyApp(object):
             # sleep some time
             time.sleep(0.3)
     
-        with open('slave_times.txt', 'w') as f:
+        with open('ex1_slave_times.txt', 'w') as f:
             for line in slave_times:
                 f.write(f"{line}\n")
 
