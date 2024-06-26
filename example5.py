@@ -11,6 +11,9 @@ from src.processes import process_target
 from src.processes import process_windows
 from src.utils.split import split_dict_into_chunks
 
+import pickle
+import argparse
+
 Tasks = IntEnum('Tasks', 'TASK1 TASK2')
 
 
@@ -44,7 +47,7 @@ class MyApp(object):
     gives slaves back when the Masters have work again.
     """
 
-    def __init__(self, slaves,  task1_num_slave=None, task2_num_slave=None):
+    def __init__(self, slaves,  task1_num_slave=None, task2_num_slave=None, data_folder="data"):
         """
         Each task/master can be limited on the number of slaves by the init
         arguments. Leave them None if you don't want to limit a specific Master
@@ -62,6 +65,8 @@ class MyApp(object):
         masters_details = [(Tasks.TASK1, self.master1, task1_num_slave),
                            (Tasks.TASK2, self.master2, task2_num_slave) ]
         self.work_queue = MultiWorkQueue(slaves, masters_details)
+
+        self.data_folder = data_folder
 
 
     def terminate_slaves(self):
@@ -99,7 +104,7 @@ class MyApp(object):
         #    self.__add_next_task(i)
 
         # Read your DataFrame
-        ref_df, fastq_df, maf_df = read_from_folder("data")
+        ref_df, fastq_df, maf_df = read_from_folder(self.data_folder)
         
         paf_row = 0
         paf_not_empty = True
@@ -154,13 +159,11 @@ class MyApp(object):
             time.sleep(0.3)
         timeend = time.time()
         print(timeend - timestart)
-        with open('ex5_slave_times_task1.txt', 'w') as f:
-            for line in slave_times_task1:
-                f.write(f"{line}\n")
-
-        with open('ex5_slave_times_task2.txt', 'w') as f:
-            for line in slave_times_task2:
-                f.write(f"{line}\n")
+    
+        with open("test", "wb") as fp:   #Pickling
+            pickle.dump(slave_times_task1, fp)
+        with open("test", "wb") as fp:   #Pickling
+            pickle.dump(slave_times_task2, fp)
             
 
 
@@ -212,13 +215,16 @@ class MySlave(Slave):
             end_time = time.time()
             
             print('  Slave %s rank %d executing %s with task_id %s' % (name, rank, task, target) )
-            ret = (True, (target, consensus_sequence), end_time - start_time)
+            ret = (True, (target, consensus_sequence), (len(target), end_time - start_time))
 
         return (task, ret)
 
 
 def main():
-
+    parser = argparse.ArgumentParser(description='Short sample app')
+    parser.add_argument('--folder', action="store", dest='folder', default="data")
+    args = parser.parse_args()
+    
     name = MPI.Get_processor_name()
     rank = MPI.COMM_WORLD.Get_rank()
     size = MPI.COMM_WORLD.Get_size()
@@ -228,7 +234,7 @@ def main():
     if rank == 0: # Master
         task1_num_slave = 1
         task2_num_slave = size - 1 - task1_num_slave
-        app = MyApp(slaves=range(1, size), task1_num_slave=task1_num_slave, task2_num_slave=task2_num_slave)
+        app = MyApp(slaves=range(1, size), task1_num_slave=task1_num_slave, task2_num_slave=task2_num_slave, data_folder=args.folder)
         app.run(min_buffer_tasks=task2_num_slave)
         app.terminate_slaves()
 
