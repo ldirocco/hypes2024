@@ -197,7 +197,7 @@ class MySlave(Slave):
         if task == Tasks.TASK1:
             start_time = time.time()
             paf_row, tasks = data
-            paf_df, paf_row = read_dist_paf("data/overlap.paf", skiprows=paf_row, group_col_idx=0, n_process=tasks)
+            paf_df, paf_row = read_dist_paf(f"{self.data_folder}/overlap.paf", skiprows=paf_row, group_col_idx=0, n_process=tasks)
             #print('  Slave %s rank %d executing %s with task_id %d' % (name, rank, task, arg1) )
             end_time = time.time()
             ret = (True, (paf_df, paf_row), end_time - start_time)
