@@ -201,7 +201,7 @@ class MySlave(Slave):
             paf_df, paf_row = read_dist_paf(f"{self.data_folder}/overlap.paf", skiprows=paf_row, group_col_idx=0, n_process=tasks)
             #print('  Slave %s rank %d executing %s with task_id %d' % (name, rank, task, arg1) )
             end_time = time.time()
-            ret = (True, (paf_df, paf_row), end_time - start_time)
+            ret = (True, (paf_df, paf_row, end_time - start_time))
 
         elif task == Tasks.TASK2:
             start_time = time.time()
@@ -216,7 +216,7 @@ class MySlave(Slave):
             end_time = time.time()
             
             print('  Slave %s rank %d executing %s with task_id %s' % (name, rank, task, target) )
-            ret = (True, (target, consensus_sequence), (len(target), end_time - start_time))
+            ret = (True, (target, consensus_sequence, (len(target), end_time - start_time)))
 
         return (task, ret)
 
