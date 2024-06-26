@@ -179,8 +179,9 @@ class MySlave(Slave):
     slave for that task.
     """
 
-    def __init__(self):
+    def __init__(self, data_folder="data"):
         super(MySlave, self).__init__()
+        self.data_folder = data_folder
 
     def do_work(self, args):
         
@@ -240,7 +241,7 @@ def main():
 
     else: # Any slave
 
-        MySlave().run()
+        MySlave(data_folder=args.folder).run()
 
     print('Task completed (rank %d)' % (rank) )
 
