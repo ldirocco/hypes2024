@@ -160,9 +160,9 @@ class MyApp(object):
         timeend = time.time()
         print(timeend - timestart)
     
-        with open("test", "wb") as fp:   #Pickling
+        with open(f"{self.data_folder}_times_task1.pickle", "wb") as fp:   #Pickling
             pickle.dump(slave_times_task1, fp)
-        with open("test", "wb") as fp:   #Pickling
+        with open(f"{self.data_folder}_times_task2.pickle", "wb") as fp:   #Pickling
             pickle.dump(slave_times_task2, fp)
             
 
@@ -214,9 +214,8 @@ class MySlave(Slave):
             #for k, v in windows.items():
             consensus_sequence = process_windows(windows)
             end_time = time.time()
-            
             print('  Slave %s rank %d executing %s with task_id %s' % (name, rank, task, target) )
-            ret = (True, (target, consensus_sequence, (len(target), end_time - start_time)))
+            ret = (True, (target, consensus_sequence, (len(data[1]), end_time - start_time)))
 
         return (task, ret)
 
