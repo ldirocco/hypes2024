@@ -12,14 +12,11 @@ def read_from_folder(folder_path):
     fastq_files = glob.glob(f"{folder_path}/*.fastq")
     maf_files = glob.glob(f"{folder_path}/*.maf")
 
-    ref_df = read_fasta(ref_files[0])
-    #ref_df = pd.concat([read_fasta(file) for file in ref_files])
+    ref_df = pd.concat([read_fasta(file) for file in ref_files])
     #fastq_df = pd.concat([read_fastq(file) for file in fastq_files])
     fastq_df = {}
-    #for d in [read_fastq(file) for file in fastq_files]:
-    #    fastq_df.update(d)
-    for d in [read_fastq(fastq_files[0])]:
+    for d in [read_fastq(file) for file in fastq_files]:
         fastq_df.update(d)
-    #maf_df = pd.concat([read_maf(file) for file in maf_files])
-    maf_df = read_maf(maf_files[0])
+    
+    maf_df = pd.concat([read_maf(file) for file in maf_files])
     return ref_df, fastq_df, maf_df
